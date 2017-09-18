@@ -39,7 +39,11 @@ int main()
 
     sf::CircleShape smoke1(15);
     smoke1.setFillColor(sf::Color(219, 219, 219));
-    smoke1.setPosition({410, 0});
+    smoke1.setPosition({410, 10});
+
+    sf::CircleShape smoke2(15);
+    smoke2.setFillColor(sf::Color(219, 219, 219));
+    smoke2.setPosition({420, 0});
 
     sf::RenderWindow window(sf::VideoMode({600, 400}), "House");
     window.clear();
@@ -50,6 +54,7 @@ int main()
     window.draw(tube2);
     window.draw(smoke);
     window.draw(smoke1);
+    window.draw(smoke2);
     window.display();
 
     sf::sleep(sf::seconds(5));
