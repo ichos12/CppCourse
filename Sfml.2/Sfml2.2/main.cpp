@@ -39,11 +39,7 @@ int main()
             rose.setPoint(pointNo, point);
         }
 
-        float angle = angle + 0.01;
-        if ((angle == 3.14) || (angle == -3.14))
-        {
-            angle = -angle;
-        }
+        float angle += 0.01;
 
         position.x = position.x + std::cos(angle);
         position.y = position.y + std::sin(angle);
