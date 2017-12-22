@@ -17,6 +17,7 @@ int main()
     rose.setPosition(position);
     rose.setFillColor(sf::Color(0xE9, 0x01, 0xAD));
 
+    float angle = 0;
     while (window.isOpen())
     {
         sf::Event event;
@@ -39,9 +40,7 @@ int main()
             rose.setPoint(pointNo, point);
         }
 
-        float angle;
         angle += 0.01;
-
         position.x = position.x + std::cos(angle);
         position.y = position.y + std::sin(angle);
         rose.setPosition(position);
