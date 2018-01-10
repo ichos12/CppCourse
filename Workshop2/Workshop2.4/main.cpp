@@ -14,18 +14,16 @@ void initGenerator(PRNG &generator)
     generator.engine.seed(seed);
 }
 
-unsigned randomIndex(PRNG &generator, unsigned minValue, unsigned maxValue)
+unsigned randomIndex(PRNG &generator, unsigned min, unsigned max)
 {
-    std::uniform_int_distribution<unsigned> distribution(minValue, maxValue);
+    std::uniform_int_distribution<unsigned> distribution(min, max);
     return distribution(generator.engine);
 }
 
-sf::Color randomColor(PRNG &generator)
+unsigned randomIndexColor(PRNG &generator)
 {
-    return {
-        sf::Uint8(randomIndex(generator, 0, 255)),
-        sf::Uint8(randomIndex(generator, 0, 255)),
-        sf::Uint8(randomIndex(generator, 0, 255))};
+    std::uniform_int_distribution<unsigned> distribution(0, 7);
+    return distribution(generator.engine);
 }
 
 struct Ball
@@ -35,7 +33,42 @@ struct Ball
     sf::CircleShape shape;
 };
 
-void init(Ball (&balls)[5], const float BALL_SIZE)
+void resolutionColor(sf::Color (&color)[8])
+{
+    color[0].r = 255;
+    color[0].g = 255;
+    color[0].b = 0;
+
+    color[1].r = 0;
+    color[1].g = 255;
+    color[1].b = 255;
+
+    color[2].r = 0;
+    color[2].g = 0;
+    color[2].b = 255;
+
+    color[3].r = 255;
+    color[3].g = 0;
+    color[3].b = 255;
+
+    color[4].r = 255;
+    color[4].g = 0;
+    color[4].b = 0;
+
+    color[5].r = 0;
+    color[5].g = 255;
+    color[5].b = 0;
+
+    color[6].r = 150;
+    color[6].g = 150;
+    color[6].b = 155;
+
+    color[7].r = 200;
+    color[7].g = 255;
+    color[7].b = 132;
+}
+
+void init(Ball (&balls)[5], sf::Color (&color)[8], const float BALL_SIZE)
 {
 
     PRNG generator;
@@ -43,7 +76,10 @@ void init(Ball (&balls)[5], const float BALL_SIZE)
 
     sf::CircleShape shape(BALL_SIZE);
     shape.setPosition({200, 120});
-    shape.setFillColor(randomColor(generator));
+    shape.setOrigin(BALL_SIZE, BALL_SIZE);
+    int m = randomIndexColor(generator);
+    int n = randomIndexColor(generator);
+    shape.setFillColor(sf::Color((color[m].r + color[n].r) / 2, (color[m].g + color[n].g) / 2, (color[m].b + color[n].b) / 2));
     float speedX = randomIndex(generator, 300, 500);
     float speedY = randomIndex(generator, 300, 500);
 
@@ -51,7 +87,10 @@ void init(Ball (&balls)[5], const float BALL_SIZE)
     balls[0].shape = shape;
 
     shape.setPosition({550, 120});
-    shape.setFillColor(randomColor(generator));
+    shape.setOrigin(BALL_SIZE, BALL_SIZE);
+    m = randomIndexColor(generator);
+    n = randomIndexColor(generator);
+    shape.setFillColor(sf::Color((color[m].r + color[n].r) / 2, (color[m].g + color[n].g) / 2, (color[m].b + color[n].b) / 2));
     speedX = randomIndex(generator, 300, 500);
     speedY = randomIndex(generator, 300, 500);
 
@@ -59,7 +98,10 @@ void init(Ball (&balls)[5], const float BALL_SIZE)
     balls[1].shape = shape;
 
     shape.setPosition({200, 220});
-    shape.setFillColor(randomColor(generator));
+    shape.setOrigin(BALL_SIZE, BALL_SIZE);
+    m = randomIndexColor(generator);
+    n = randomIndexColor(generator);
+    shape.setFillColor(sf::Color((color[m].r + color[n].r) / 2, (color[m].g + color[n].g) / 2, (color[m].b + color[n].b) / 2));
     speedX = randomIndex(generator, 300, 500);
     speedY = randomIndex(generator, 300, 500);
 
@@ -67,7 +109,10 @@ void init(Ball (&balls)[5], const float BALL_SIZE)
     balls[2].shape = shape;
 
     shape.setPosition({300, 120});
-    shape.setFillColor(randomColor(generator));
+    shape.setOrigin(BALL_SIZE, BALL_SIZE);
+    m = randomIndexColor(generator);
+    n = randomIndexColor(generator);
+    shape.setFillColor(sf::Color((color[m].r + color[n].r) / 2, (color[m].g + color[n].g) / 2, (color[m].b + color[n].b) / 2));
     speedX = randomIndex(generator, 300, 500);
     speedY = randomIndex(generator, 300, 500);
 
@@ -75,7 +120,10 @@ void init(Ball (&balls)[5], const float BALL_SIZE)
     balls[3].shape = shape;
 
     shape.setPosition({300, 220});
-    shape.setFillColor(randomColor(generator));
+    shape.setOrigin(BALL_SIZE, BALL_SIZE);
+    m = randomIndexColor(generator);
+    n = randomIndexColor(generator);
+    shape.setFillColor(sf::Color((color[m].r + color[n].r) / 2, (color[m].g + color[n].g) / 2, (color[m].b + color[n].b) / 2));
     speedX = randomIndex(generator, 300, 500);
     speedY = randomIndex(generator, 300, 500);
 
@@ -115,7 +163,7 @@ void update(const unsigned WINDOW_WIDTH, const unsigned WINDOW_HEIGHT, const flo
         balls[i].position = balls[i].shape.getPosition();
         balls[i].position += balls[i].speed * dt;
 
-        if (balls[i].position.x + 2 * BALL_SIZE >= WINDOW_WIDTH)
+        if (balls[i].position.x + BALL_SIZE >= WINDOW_WIDTH)
         {
             balls[i].speed.x = -balls[i].speed.x;
         }
@@ -123,7 +171,7 @@ void update(const unsigned WINDOW_WIDTH, const unsigned WINDOW_HEIGHT, const flo
         {
             balls[i].speed.x = -balls[i].speed.x;
         }
-        if (balls[i].position.y + 2 * BALL_SIZE >= WINDOW_HEIGHT)
+        if (balls[i].position.y + BALL_SIZE >= WINDOW_HEIGHT)
         {
             balls[i].speed.y = -balls[i].speed.y;
         }
@@ -142,10 +190,10 @@ void update(const unsigned WINDOW_WIDTH, const unsigned WINDOW_HEIGHT, const flo
             sf::Vector2f dtPosition = balls[n].position - balls[m].position;
             sf::Vector2f dtSpeed = balls[n].speed - balls[m].speed;
 
-            float length = std::sqrt(pow(dtPosition.x, 2) + std::pow(dtPosition.y, 2));
-            float changeSpeed = ((dtPosition.x * dtSpeed.x) + (dtPosition.y * dtSpeed.y)) / std::pow(length, 2);
+            float distance = std::sqrt(pow(dtPosition.x, 2) + std::pow(dtPosition.y, 2));
+            float changeSpeed = ((dtPosition.x * dtSpeed.x) + (dtPosition.y * dtSpeed.y)) / std::pow(distance, 2);
 
-            if (length <= (2 * BALL_SIZE))
+            if (distance <= (2 * BALL_SIZE))
             {
                 balls[m].speed = balls[m].speed + changeSpeed * dtPosition;
                 balls[n].speed = balls[n].speed - changeSpeed * dtPosition;
@@ -164,8 +212,10 @@ int main()
     sf::Clock clock;
 
     Ball balls[5];
+    sf::Color(color[8]);
+    resolutionColor(color);
 
-    init(balls, BALL_SIZE);
+    init(balls, color, BALL_SIZE);
 
     while (window.isOpen())
     {
